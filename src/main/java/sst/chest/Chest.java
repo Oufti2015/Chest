@@ -37,6 +37,6 @@ public class Chest {
     }
 
     Set<Class<?>> typesList() {
-	return data.keySet();
+	return chestConfig.getFilenames().keySet();
     }
 }
