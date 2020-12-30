@@ -1,43 +1,55 @@
 package sst.chest;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class ChestTest {
 
     @Test
     public void saveTest() {
-	Chest chest = new ChestBuilder().filename(String.class, "test.json").build();
+        Chest<String> chest = new ChestBuilder<String>().filename("test.json").build();
 
-	Assert.assertNotNull(chest);
+        Assert.assertNotNull(chest);
 
-	List<String> strings = Arrays.asList("un", "deux", "trois", "quatre");
+        List<String> strings = Arrays.asList("un", "deux", "trois", "quatre");
 
-	chest.add("cinq");
-	chest.add("six");
-	chest.add("sept");
-	chest.add("huit");
+        chest.addAll(strings);
+        chest.add("cinq");
+        chest.add("six");
+        chest.add("sept");
+        chest.add("huit");
 
-	ChestSaver.save(chest);
+        Assert.assertEquals(8, chest.objects().size());
 
-	Assert.assertTrue(new File("test.json").exists());
-	// chest.addAll(strings);
+        new ChestSaver<String>().save(chest);
+
+        Assert.assertTrue(new File("test.json").exists());
+        // chest.addAll(strings);
     }
 
     @Test
     public void loadTest() {
-	Chest chest = new ChestBuilder().filename(String.class, "test.json").build();
+        Chest<String> chest = new ChestBuilder().filename("test.json").build();
 
-	Assert.assertNotNull(chest);
+        Assert.assertNotNull(chest);
 
-	ChestLoader.load(chest);
+        new ChestLoader<String>().load(chest);
 
-	Assert.assertEquals(1, chest.typesList().size());
+        Assert.assertEquals(8, chest.objects().size());
 
-	System.out.println(chest.object(String.class));
+        System.out.println(chest.objects());
+    }
+
+    @Test
+    public void loadTestWithConfig() {
+        Chest<String> chest = new ChestLoader<String>().load();
+
+        Assert.assertEquals(8, chest.objects().size());
+
+        System.out.println(chest.objects());
     }
 }

@@ -2,35 +2,35 @@ package sst.chest;
 
 import sst.chest.ChestConfig.OutputFormat;
 
-public class ChestBuilder {
+public class ChestBuilder<T> {
     private ChestConfig chestConfig = new ChestConfig();
 
-    public ChestBuilder outputFormat(OutputFormat outputFormat) {
-	this.chestConfig.setOutputFormat(outputFormat);
-	return this;
+    public ChestBuilder<T> outputFormat(OutputFormat outputFormat) {
+        this.chestConfig.setOutputFormat(outputFormat);
+        return this;
     }
 
-    public ChestBuilder versioning(Boolean versioning) {
-	this.chestConfig.setVersioning(versioning);
-	return this;
+    public ChestBuilder<T> versioning(Boolean versioning) {
+        this.chestConfig.setVersioning(versioning);
+        return this;
     }
 
-    public ChestBuilder outputFolder(String outputFolder) {
-	this.chestConfig.setOutputFolder(outputFolder);
-	return this;
+    public ChestBuilder<T> outputFolder(String outputFolder) {
+        this.chestConfig.setOutputFolder(outputFolder);
+        return this;
     }
 
-    public ChestBuilder inputFolder(String inputFolder) {
-	this.chestConfig.setInputFolder(inputFolder);
-	return this;
+    public ChestBuilder<T> inputFolder(String inputFolder) {
+        this.chestConfig.setInputFolder(inputFolder);
+        return this;
     }
 
-    public ChestBuilder filename(Class<?> objectClass, String filename) {
-	this.chestConfig.addFilename(objectClass, filename);
-	return this;
+    public ChestBuilder<T> filename(String filename) {
+        this.chestConfig.setFilename(filename);
+        return this;
     }
 
-    public Chest build() {
-	return new Chest(this.chestConfig);
+    public Chest<T> build() {
+        return new Chest<>(this.chestConfig);
     }
 }

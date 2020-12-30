@@ -1,32 +1,51 @@
 package sst.chest;
 
-import java.io.File;
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
+import com.google.gson.JsonSyntaxException;
 import sst.textfile.InputTextFile;
 import sst.textfile.InputTextFileImpl;
 
-public class ChestLoader {
-    public static void load(Chest chest) {
-	Gson gson = new GsonBuilder()
-		.setPrettyPrinting()
-		.serializeNulls()
-		.create();
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-	ChestConfig chestConfig = chest.getChestConfig();
+public class ChestLoader<T> {
+    public void load(Chest<T> chest) {
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
 
-	for (Class<?> objectType : chest.typesList()) {
-	    try {
-		InputTextFile input = new InputTextFileImpl(new File(chestConfig.filename(objectType)));
-		@SuppressWarnings("unchecked")
-		List<Object> list = gson.fromJson(String.join(" ", input.lines()), List.class);
-		chest.addAll(list);
-	    } catch (Exception e1) {
-		e1.printStackTrace();
-	    }
-	}
+        ChestConfig chestConfig = chest.getChestConfig();
+
+        try {
+            InputTextFile input = new InputTextFileImpl(chestConfig.file());
+            List<T> list = new ArrayList<>();
+            list = gson.fromJson(String.join(" ", input.lines()), list.getClass());
+            chest.addAll(list);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    public Chest<T> load() {
+        Chest<T> chest = null;
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+
+        ChestConfig chestConfig = null;
+        try {
+            InputTextFile input = new InputTextFileImpl(ChestConfig.configFile("."));
+            chestConfig = gson.fromJson(String.join(" ", input.lines()), ChestConfig.class);
+        } catch (JsonSyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+
+        chest = new Chest<>(chestConfig);
+        load(chest);
+        return chest;
     }
 }

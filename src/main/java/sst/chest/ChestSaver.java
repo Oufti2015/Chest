@@ -1,29 +1,30 @@
 package sst.chest;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import sst.common.file.output.OutputFile;
 
-public class ChestSaver {
+import java.io.IOException;
 
-    public static void save(Chest chest) {
-	Gson gson = new GsonBuilder()
-		.setPrettyPrinting()
-		.serializeNulls()
-		.create();
+public class ChestSaver<T> {
 
-	ChestConfig chestConfig = chest.getChestConfig();
+    public void save(Chest<T> chest) {
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
 
-	for (Class<?> objectType : chest.typesList()) {
-	    try (OutputFile output = new OutputFile(new File(chestConfig.filename(objectType)))) {
-		output.println(gson.toJson(chest.object(objectType)));
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
-	}
+        ChestConfig chestConfig = chest.getChestConfig();
+        try (OutputFile output = new OutputFile(ChestConfig.configFile("."))) {
+            output.println(gson.toJson(chestConfig));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (OutputFile output = new OutputFile(chestConfig.file())) {
+            output.println(gson.toJson(chest.objects()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

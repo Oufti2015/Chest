@@ -1,28 +1,30 @@
 package sst.chest;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Data;
+
+import java.io.File;
 
 @Data
 public class ChestConfig {
     public enum OutputFormat {
-	JSON
-    };
+        JSON
+    }
 
     private OutputFormat outputFormat = OutputFormat.JSON;
     private Boolean versioning = false;
     private String outputFolder = ".";
     private String inputFolder = ".";
-    private Map<Class<?>, String> filenames = new HashMap<>();
+    private String filename = "data.json";
 
-    public ChestConfig addFilename(Class<?> objectClass, String filename) {
-	filenames.put(objectClass, filename);
-	return this;
+    public File file() {
+        return new File(((outputFolder == null) ? "" : outputFolder + File.separator) + filename);
     }
 
-    public String filename(Class<?> objectClass) {
-	return filenames.get(objectClass);
+    public static String configFileName() {
+        return ChestConfig.class.getSimpleName() + ".json";
+    }
+
+    public static File configFile(String folder) {
+        return new File(folder + File.separator + configFileName());
     }
 }

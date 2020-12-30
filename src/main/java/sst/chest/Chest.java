@@ -1,42 +1,28 @@
 package sst.chest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import lombok.Getter;
 
-public class Chest {
-    private Map<Class<?>, List<Object>> data = new HashMap<>();
+import java.util.ArrayList;
+import java.util.List;
+
+public class Chest<T> {
+    private List<T> data = new ArrayList<>();
     @Getter
-    final private ChestConfig chestConfig;
+    private final ChestConfig chestConfig;
 
     public Chest(ChestConfig chestConfig) {
-	this.chestConfig = chestConfig;
+        this.chestConfig = chestConfig;
     }
 
-    public List<?> object(Class<?> objectClass) {
-	return data.get(objectClass);
+    public List<T> objects() {
+        return data;
     }
 
-    public void add(Object object) {
-	List<Object> temp = data.get(object.getClass());
-	if (temp == null) {
-	    temp = new ArrayList<>();
-	    data.put(object.getClass(), temp);
-	}
-	temp.add(object);
+    public void add(T object) {
+        data.add(object);
     }
 
-    public void addAll(List<Object> list) {
-	for (Object object : list) {
-	    this.add(object);
-	}
-    }
-
-    Set<Class<?>> typesList() {
-	return chestConfig.getFilenames().keySet();
+    public void addAll(List<T> list) {
+        data.addAll(list);
     }
 }

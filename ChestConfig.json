@@ -1,0 +1,7 @@
+{
+  "outputFormat": "JSON",
+  "versioning": false,
+  "outputFolder": ".",
+  "inputFolder": ".",
+  "filename": "test.json"
+}
